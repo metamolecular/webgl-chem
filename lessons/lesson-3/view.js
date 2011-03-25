@@ -81,12 +81,12 @@ m3d.View.prototype.redraw = function() {
 };
 
 /**
- * @private
+ * @param {object} atom The atom to draw
  */
-m3d.View.prototype.drawAtom = function(x, y, z) {
+m3d.View.prototype.drawAtom = function(atom) {
   var sphere = new PhiloGL.O3D.Sphere({ nlat: 20, nlong: 20, radius: 0.5, colors: [1, 0, 0, 1] });
   
-  sphere.position.set(x, y, z);
+  sphere.position.set(atom.x, atom.y, atom.z);
   sphere.update();
   
   this.scene_.add(sphere);

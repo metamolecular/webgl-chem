@@ -11,9 +11,7 @@ m3d.createView = function(id, params) {
   var molecule = reader.read(params.file);
   
   for (var i = 0; i < molecule.atoms.length; i++) {
-    var atom = molecule.atoms[i];
-    
-    view.drawAtom(atom.x, atom.y, atom.z);
+    view.drawAtom(molecule.atoms[i]);
   }
   
   view.redraw();
