@@ -9,10 +9,11 @@ m3d.MolfileReader = function() {
 };
 
 /**
+ * @param {string} molfile
  * @return {Object}
  */
-m3d.MolfileReader.prototype.read = function(sdf) {
-  var lines = sdf.split("\n");
+m3d.MolfileReader.prototype.read = function(molfile) {
+  var lines = molfile.split("\n");
   var atomCount = parseFloat(lines[3].substring(0, 3));
   var atoms = [];
   
