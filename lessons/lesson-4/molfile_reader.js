@@ -46,19 +46,6 @@ m3d.MolfileReader.prototype.read = function(molfile) {
         var distance = new PhiloGL.Vec3(dx, dy, dz);
         
         return this.source.position.add(distance);
-      },
-      getRotation: function() {
-        var sub = this.source.position.sub(this.target.position);
-        var length = this.getLength();
-        
-        // TODO: how to calculate these angles?
-        var rx = 0;
-        var ry = 0;
-        var rz = 0;
-        
-        return new PhiloGL.Vec3(
-          rx, ry, rz
-        );
       }
     });
   }

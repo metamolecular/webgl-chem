@@ -97,11 +97,35 @@ m3d.View.prototype.drawAtom = function(atom) {
  * @param {object} bond The bond to draw
  */
 m3d.View.prototype.drawBond = function(bond) {
-  var cylinder = new PhiloGL.O3D.Cylinder({ radius: 0.1, height: bond.getLength() });
-  var source = bond.source.position;
+  var cylinder = new PhiloGL.O3D.Cylinder({ radius: 0.1, height: 1});
+  var p1 = bond.source.position;
+  var p2 = bond.target.position;
+
+  //distance between the two points 
+  var dist = p1.distTo(p2);
+  //current direction of the cylinder (facing up) 
+  var currentDir = new PhiloGL.Vec3(0, 1, 0);
+  //middle point 
+  var mp = p1.add(p2).$scale(0.5);
+  //direction vector from p1 to p2 
+  var dv = p2.sub(p1).$unit();
   
-  cylinder.position = bond.getMidpoint();
-  cylinder.rotation = bond.getRotation();
+  //now create parameters to fill the rotation matrix 
+  var c = dv.dot(currentDir);
+  var rotAngle = Math.acos(c);
+  var rotAxis = currentDir.$cross(dv).$unit();
+  
+  //now set rotation translation and scaling to the model 
+  var cylinderMatrix = cylinder.matrix; 
+  //clear the matrix 
+  cylinderMatrix.id(); 
+  //translate to the middle point 
+  cylinderMatrix.$translate(mp.x, mp.y, mp.z); 
+  //scale to the distance of the two points 
+  cylinderMatrix.$scale(1, dist, 1); 
+  //rotate around an angle and an axis 
+  cylinderMatrix.$rotateAxis(rotAngle, rotAxis);
+  
   cylinder.update();
   
   this.scene_.add(cylinder);
