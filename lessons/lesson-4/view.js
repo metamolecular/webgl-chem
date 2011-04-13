@@ -84,7 +84,7 @@ m3d.View.prototype.redraw = function() {
  * @param {object} atom The atom to draw
  */
 m3d.View.prototype.drawAtom = function(atom) {
-  var sphere = new PhiloGL.O3D.Sphere({ nlat: 20, nlong: 20, radius: 0.15, colors: [1, 0, 0, 1] });
+  var sphere = new PhiloGL.O3D.Sphere({ nlat: 20, nlong: 20, radius: 0.4, colors: [1, 0, 0, 1] });
   var position = atom.position;
   
   sphere.position.set(position.x, position.y, position.z);
@@ -97,38 +97,32 @@ m3d.View.prototype.drawAtom = function(atom) {
  * @param {object} bond The bond to draw
  */
 m3d.View.prototype.drawBond = function(bond) {
-  var cylinder = new PhiloGL.O3D.Cylinder({ radius: 0.1, height: 1});
-  var p1 = bond.source.position;
-  var p2 = bond.target.position;
+  var cylinder = new PhiloGL.O3D.Cylinder({ radius: 0.2, height: bond.getLength()}); 
 
-  //distance between the two points 
-  var dist = p1.distTo(p2);
-  //current direction of the cylinder (facing up) 
-  var currentDir = new PhiloGL.Vec3(0, 1, 0);
-  //middle point 
-  var mp = p1.add(p2).$scale(0.5);
-  //direction vector from p1 to p2 
-  var dv = p2.sub(p1).$unit();
-  
-  //now create parameters to fill the rotation matrix 
-  var c = dv.dot(currentDir);
-  var rotAngle = Math.acos(c);
-  var rotAxis = currentDir.$cross(dv).$unit();
-  
-  //now set rotation translation and scaling to the model 
-  var cylinderMatrix = cylinder.matrix; 
-  //clear the matrix 
-  cylinderMatrix.id(); 
-  //translate to the middle point 
-  cylinderMatrix.$translate(mp.x, mp.y, mp.z); 
-  //scale to the distance of the two points 
-  cylinderMatrix.$scale(1, dist, 1); 
-  //rotate around an angle and an axis 
-  cylinderMatrix.$rotateAxis(rotAngle, rotAxis);
-  
-  cylinder.update();
-  
+  this.translateCylinder_(bond, cylinder);
+  this.rotateCylinder_(bond, cylinder);
   this.scene_.add(cylinder);
+};
+
+/**
+ * @private
+ */
+m3d.View.prototype.translateCylinder_ = function(bond, cylinder) {
+  var midpoint = bond.getMidpoint();
+  
+  cylinder.matrix.$translate(midpoint.x, midpoint.y, midpoint.z);
+};
+
+/**
+ * @private
+ */
+m3d.View.prototype.rotateCylinder_ = function(bond, cylinder) {
+  var cylinderDirection = new PhiloGL.Vec3(0, 1, 0);
+  var bondDirection = bond.getDirection();
+  var angle = Math.acos(bondDirection.dot(cylinderDirection));
+  var axis = cylinderDirection.$cross(bondDirection).$unit();
+
+  cylinder.matrix.$rotateAxis(angle, axis);
 };
 
 /**

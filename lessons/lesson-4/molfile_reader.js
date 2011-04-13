@@ -40,12 +40,10 @@ m3d.MolfileReader.prototype.read = function(molfile) {
         return Math.pow((Math.pow(sub.x, 2) + Math.pow(sub.y, 2) + Math.pow(sub.z, 2)), 0.5);
       },
       getMidpoint: function() {
-        var dx = 0.5 * (this.target.position.x - this.source.position.x);
-        var dy = 0.5 * (this.target.position.y - this.source.position.y);
-        var dz = 0.5 * (this.target.position.z - this.source.position.z);
-        var distance = new PhiloGL.Vec3(dx, dy, dz);
-        
-        return this.source.position.add(distance);
+        return this.source.position.add(this.target.position).scale(0.5);
+      },
+      getDirection: function() {
+        return this.target.position.sub(this.source.position).unit();
       }
     });
   }

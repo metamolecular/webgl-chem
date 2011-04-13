@@ -14,7 +14,7 @@ m3d.createView = function(id, params) {
     view.drawAtom(molecule.atoms[i]);
   }
   
-  for (var i = 0; i < molecule.atoms.length; i++) {
+  for (var i = 0; i < molecule.bonds.length; i++) {
     view.drawBond(molecule.bonds[i]);    
   }
   
